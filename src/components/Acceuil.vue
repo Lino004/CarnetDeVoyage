@@ -4,10 +4,12 @@
       <div class="collapse bg-dark" id="navbarHeader">
         <div class="container">
           <div class="row">
+<!--Texte descriptif de l'application-->
             <div class="col-sm-8 col-md-5 py-4">
               <h4 class="text-white">Album</h4>
               <p class="text-muted">Votre plateforme de voyage. Parcourez le monde et gardez vos souvenir près de vous à chaque moment</p>
             </div>
+<!--Menu de navigation de l'application-->
             <div class="col-sm-2 offset-md-1 py-4">
               <h4 class="text-white"></h4>
               <ul class="list-unstyled">
@@ -24,11 +26,13 @@
                 <li><a href="#" class="text-white" @click.prevent="deconnecter"><i class="fa fa-sign-out"> </i> Deconnection</a></li>
               </ul>
             </div>
+<!--FIN Menu de navigation de l'application-->
           </div>
         </div>
       </div>
       <div class="navbar navbar-dark bg-dark box-shadow">
         <div class="container d-flex justify-content-between">
+<!--Bouton d'ajout d'un evenement-->
           <a href="#" class="navbar-brand d-flex align-items-center" data-toggle="modal" data-target="#myModal">
             <i class="fa fa-plus"></i>&nbsp;
             <span>Add</span>
@@ -76,35 +80,16 @@
             </div>
           </div>
         </div>
-<!--Fin de la Fenetre popup d'ajout d'un evenement-->
+<!--Bouton de navigation-->
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarHeader" aria-controls="navbarHeader" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-          </button>
+          <span class="navbar-toggler-icon"></span>
+        </button>
+<!--...-->
       </div>
     </div>
     </header>
     <main role="main">
-      <div class="album py-5 bg-light">
-        <div class="container">
-          <div class="row">
-            <div class="col-md-4">
-              <div class="card mb-4 box-shadow">
-                <img class="card-img-top" src="../style/images/default.png" alt="Card image cap">
-                <div class="card-body">
-                  <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                  <div class="d-flex justify-content-between align-items-center">
-                    <div class="btn-group">
-                      <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
-                      <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
-                    </div>
-                    <small class="text-muted"> 9 mins </small>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+<!--Affichage des evenements-->
       <div class="album py-5 bg-light">
         <div class="container">
           <div class="row">
@@ -126,6 +111,7 @@
           </div>
         </div>
       </div>
+<!--...-->
     </main>
    </div>
 </template>
