@@ -4,16 +4,24 @@
       <div class="collapse bg-dark" id="navbarHeader">
         <div class="container">
           <div class="row">
-            <div class="col-sm-8 col-md-7 py-4">
+            <div class="col-sm-8 col-md-5 py-4">
               <h4 class="text-white">Album</h4>
-              <p class="text-muted">Votre plateforme de voyage</p>
+              <p class="text-muted">Votre plateforme de voyage. Parcourez le monde et gardez vos souvenir près de vous à chaque moment</p>
             </div>
-            <div class="col-sm-4 offset-md-1 py-4">
+            <div class="col-sm-2 offset-md-1 py-4">
               <h4 class="text-white"></h4>
               <ul class="list-unstyled">
-                <li><a href="#" class="text-white">Follow on Twitter</a></li>
-                <li><a href="#" class="text-white">Like on Facebook</a></li>
-                <li><a href="#" class="text-white" @click.prevent="deconnecter">Deconnection</a></li>
+                <li><a href="#" class="text-white"><i class="fa fa-home"></i>&emsp;Acceuil</a></li>
+                <li><a href="#" class="text-white"><i class="fa fa-image"></i>&emsp;Mes Albums</a></li>
+                <li><a href="#" class="text-white"><i class="fa fa-gratipay"></i>&emsp;Mes Favoris</a></li>
+              </ul>
+            </div>
+            <div class="col-sm-2 offset-md-1 py-4">
+              <h4 class="text-white"></h4>
+              <ul class="list-unstyled">
+                <li><a href="#" class="text-white"><i class="fa fa-plane"> </i> Mes Destinations</a></li>
+                <li><a href="#" class="text-white"><i class="fa fa-user-circle"> </i> Mon compte</a></li>
+                <li><a href="#" class="text-white" @click.prevent="deconnecter"><i class="fa fa-sign-out"> </i> Deconnection</a></li>
               </ul>
             </div>
           </div>
@@ -22,16 +30,16 @@
       <div class="navbar navbar-dark bg-dark box-shadow">
         <div class="container d-flex justify-content-between">
           <a href="#" class="navbar-brand d-flex align-items-center" data-toggle="modal" data-target="#myModal">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+            <i class="fa fa-plus"></i>&nbsp;
             <span>Add</span>
           </a>
+<!--Fenetre popup d'ajout d'un evenement-->
           <div class="modal fade" id="myModal" role="document">
             <div class="modal-dialog">
-<!--POPup content-->
               <div class="modal-content">
                 <div class="modal-header">
-                  <h4 class="modal-title">Nouvelle Image</h4>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <h4 class="modal-title">Nouvelle Evenement</h4>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                   </button>
                 </div>
@@ -68,6 +76,7 @@
             </div>
           </div>
         </div>
+<!--Fin de la Fenetre popup d'ajout d'un evenement-->
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarHeader" aria-controls="navbarHeader" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
@@ -162,6 +171,4 @@ export default {
 }
 </script>
 
-<style>
-
-</style>
+<style src="../style/fonts/font-awesome-4.7.0/css/font-awesome.min.css"></style>
