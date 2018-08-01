@@ -52,19 +52,19 @@
                     <form>
                       <div class="form-group wrap-input100 validate-input m-b-23" data-validate = "Un Pseudo est requis">
                         <label>Titre</label>
-                        <input type="text" class="form-control" placeholder="titre" v-model="newParcours.titre">
+                        <input type="text" class="form-control" placeholder="titre" v-model="newEven.titre">
                       </div>
                       <div class="form-group">
                         <label>Lieu</label>
-                        <input type="text" class="form-control" placeholder="Lieu" v-model="newParcours.lieu">
+                        <input type="text" class="form-control" placeholder="Lieu" v-model="newEven.lieu">
                       </div>
                       <div class="form-group">
                         <label>Date</label>
-                        <input type="date" class="form-control" placeholder="Date" v-model="newParcours.date">
+                        <input type="date" class="form-control" placeholder="Date" v-model="newEven.date">
                       </div>
                       <div class="form-group">
                         <label>Commentaire</label>
-                        <textarea class="form-control" rows="3" v-model="newParcours.recit"></textarea>
+                        <textarea class="form-control" rows="3" v-model="newEven.recit"></textarea>
                       </div>
                     </form>
                   </div>
@@ -97,11 +97,11 @@
               <div class="card mb-4 box-shadow">
                 <img class="card-img-top" src="../style/images/default.png" alt="Card image cap">
                 <div class="card-body">
-                  <p class="card-text"> {{ event.recit }} </p>
+                  <p class="card-text"> {{ event.titre }} </p>
                   <div class="d-flex justify-content-between align-items-center">
                     <div class="btn-group">
-                      <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
-                      <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+                      <button type="button" class="btn btn-sm btn-outline-secondary">Voir</button>
+                      <button type="button" class="btn btn-sm btn-outline-secondary">Editter</button>
                     </div>
                     <small class="text-muted">Le {{event.date}}</small>
                   </div>
@@ -125,19 +125,19 @@ export default {
     return {
       userId: null,
       db: null,
-      newParcours: {
+      events: [],
+      newEven: {
         titre: '',
         lieu: '',
         date: null,
         recit: ''
-      },
-      events: []
+      }
     }
   },
   mounted () {
     this.userId = firebase.auth().currentUser.uid
     this.db = firebase.database()
-    this.db.ref(this.userId).on('value', s => this.events = s)
+    firebase.database().ref(this.userId).on('child_added', snapshot => this.events.push(snapshot.val()))
   },
   methods: {
     deconnecter () {
@@ -147,11 +147,15 @@ export default {
     },
     add () {
       this.db.ref(this.userId).push().set({
-        titre: this.newParcours.titre,
-        lieu: this.newParcours.lieu,
-        date: Date(),
-        recit: this.newParcours.recit
+        titre: this.newEven.titre,
+        lieu: this.newEven.lieu,
+        date: this.newEven.date,
+        recit: this.newEven.recit
       })
+      this.newEven.titre = ''
+      this.newEven.lieu = ''
+      this.newEven.date = ''
+      this.newEven.recit = ''
     }
   }
 }

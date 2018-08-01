@@ -3,12 +3,13 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
-import firebase from 'firebase'
+import firebase from 'firebase/app'
+import 'firebase/auth'
 
-import vuefire from 'vuefire'
+import VueFire from 'vuefire'
 
 Vue.config.productionTip = false
-Vue.use(vuefire)
+Vue.use(VueFire)
 
 let app
 // Initialize Firebase

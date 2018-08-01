@@ -38,7 +38,8 @@
 </template>
 
 <script>
-import firebase from 'firebase'
+import firebase from 'firebase/app'
+import 'firebase/auth'
 
 export default {
   name: 'Inscription',
@@ -56,7 +57,7 @@ export default {
     inscrire () {
       firebase.auth().createUserWithEmailAndPassword(this.user.email, this.user.password).then(
         function (user) {
-          alert('success')
+          this.$router.replace('acceuil')
         },
         function (err) {
           alert('error' + err.message)
