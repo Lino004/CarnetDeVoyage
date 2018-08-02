@@ -94,10 +94,12 @@
         <div class="container">
           <div class="row">
             <div class="col-md-4" v-for="event in events" :key="event.id">
-              <div class="card mb-4 box-shadow">
+              <div class="card mb-4 box-shadow shadow-lg">
                 <img class="card-img-top" src="../style/images/default.png" alt="Card image cap">
+                <div class="card-img-overlay d-flex align-items-start">
+                  <h5 class="w-100 display-10 font-weight-bold p-3 mb-2 bg-dark text-white mb-4">{{ event.titre }}</h5>
+                </div>
                 <div class="card-body">
-                  <p class="card-text"> {{ event.titre }} </p>
                   <div class="d-flex justify-content-between align-items-center">
                     <div class="btn-group">
                       <button type="button" class="btn btn-sm btn-outline-secondary">Voir</button>
@@ -123,10 +125,10 @@ export default {
   name: 'acceuil',
   data () {
     return {
-      userId: null,
+      userId: null, // Récupère Id de l'utilisateur
       db: null,
-      events: [],
-      newEven: {
+      events: [], // Tableau receptionnant les informations sur les évenements
+      newEven: { // Objet récupérent les informations de saisie
         titre: '',
         lieu: '',
         date: null,
