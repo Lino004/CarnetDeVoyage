@@ -66,16 +66,15 @@
                         <label>Commentaire</label>
                         <textarea class="form-control" rows="3" v-model="newEven.recit"></textarea>
                       </div>
+                      <div class="form-group">
+                        <label>Image</label>
+                        <input type="file" multiple accept="image/*" @change="detectFiles($event.target.files)">
+                      </div>
                     </form>
                   </div>
                 </div>
-                <div class="">
-                  <div class="col-md-offset-10 col-md-1">
-                    <button type="button" class="login100-form-btn" @click.prevent="add">Ajouter</button>
-                  </div>
-                  <div class="col-md-offset-1 col-md-2">
-                    <input type="file" name="Parcourir">
-                  </div>
+                <div class="col-md-offset-10 col-md-1">
+                  <button type="button"  data-toggle="modal" data-target="#myModal" class="login100-form-btn" @click.prevent="add">Ajouter</button>
                 </div>
             </div>
           </div>
@@ -93,22 +92,31 @@
       <div class="album py-5 bg-light">
         <div class="container">
           <div class="row">
-            <div class="col-md-4" v-for="event in events" :key="event.id">
-              <div class="card mb-4 box-shadow shadow-lg">
-                <img class="card-img-top" src="../style/images/default.png" alt="Card image cap">
-                <div class="card-img-overlay d-flex align-items-start">
-                  <h5 class="w-100 display-10 font-weight-bold p-3 mb-2 bg-dark text-white mb-4">{{ event.titre }}</h5>
+            <div class="row">
+            <div :class="clas.container" v-for="event in events" :key="event.id">
+              <div :class="clas.container2">
+                <div :class="clas.containerImg">
+                  <img :class="clas.Img" :style="clas.styleImg" src="../style/images/default.png" alt="Card image cap">
+                  <div class="card-img-overlay d-flex align-items-start">
+                    <h5 class="w-100 display-10 font-weight-bold p-3 bg-dark text-white">{{ event.titre }}</h5>
+                  </div>
                 </div>
-                <div class="card-body">
+                <div :class="clas.containerInfo">
+                  <div v-show="view">
+                    <h2 class="text-info">Commentaire</h2>
+                    <p class="card-text"> {{event.recit}} </p>
+                  </div>
                   <div class="d-flex justify-content-between align-items-center">
                     <div class="btn-group">
-                      <button type="button" class="btn btn-sm btn-outline-secondary">Voir</button>
-                      <button type="button" class="btn btn-sm btn-outline-secondary">Editter</button>
+                      <button type="button" class="btn btn-sm btn-outline-info" @click.prevent="voir(event)"> {{textBntVoir}} </button>
+                      <button type="button" class="btn btn-sm btn-outline-info">Editter</button>
+                      <button type="button" class="btn btn-sm btn-outline-info" @click.prevent="supp(event)">Suprimer</button>
                     </div>
                     <small class="text-muted">Le {{event.date}}</small>
                   </div>
                 </div>
               </div>
+            </div>
             </div>
           </div>
         </div>
@@ -127,19 +135,39 @@ export default {
     return {
       userId: null, // Récupère Id de l'utilisateur
       db: null,
+      stock: null,
       events: [], // Tableau receptionnant les informations sur les évenements
       newEven: { // Objet récupérent les informations de saisie
         titre: '',
         lieu: '',
         date: null,
-        recit: ''
-      }
+        recit: '',
+        image: null
+      },
+      view: false,
+      temp: [],
+      clas: {
+        container: 'col-md-4',
+        container2: 'card mb-4 box-shadow shadow-lg border-info',
+        containerImg: '',
+        Img: 'card-img-top',
+        styleImg: '',
+        containerInfo: 'card-body bg-light'
+      },
+      textBntVoir: 'Voir +'
     }
   },
   mounted () {
     this.userId = firebase.auth().currentUser.uid
     this.db = firebase.database()
-    firebase.database().ref(this.userId).on('child_added', snapshot => this.events.push(snapshot.val()))
+    firebase.database().ref(this.userId).on('child_added', snapshot => this.events.push({...snapshot.val(), id: snapshot.key}))
+    firebase.database().ref(this.userId).on('child_removed', snapshot => {
+      const eventSupp = this.events.find(even => even.id === snapshot.key)
+      const index = this.events.indexOf(eventSupp)
+      this.events.slice(index, 1)
+    })
+    this.temp = this.events
+    this.stock = firebase.storage()
   },
   methods: {
     deconnecter () {
@@ -158,6 +186,44 @@ export default {
       this.newEven.lieu = ''
       this.newEven.date = ''
       this.newEven.recit = ''
+    },
+    supp (e) {
+      this.db.ref(this.userId).child(e.id).remove()
+      location.reload()
+    },
+    voir (e) {
+      this.view = !this.view
+      if (this.view) {
+        this.textBntVoir = 'Voir -'
+        this.events = this.events.filter(ev => ev.recit === e.recit)
+        this.clas.container = 'row shadow-lg'
+        this.clas.container2 = 'row col-md-12'
+        this.clas.containerImg = 'col-md-6'
+        this.clas.Img = 'mb-4 mt-4'
+        this.clas.styleImg = 'width: 35rem'
+        this.clas.containerInfo = 'col-md-6 pt-3'
+      } else {
+        this.textBntVoir = 'Voir +'
+        this.events = this.temp
+        this.clas.container = 'col-md-4'
+        this.clas.container2 = 'card mb-4 box-shadow shadow-lg border-info'
+        this.clas.containerImg = ''
+        this.clas.Img = 'card-img-top'
+        this.clas.styleImg = ''
+        this.clas.containerInfo = 'card-body bg-light'
+      }
+    },
+    detectFiles (fileList) {
+      Array.from(Array(fileList.length).keys()).map( x => {
+        this.upload(fileList[x])
+      })
+    },
+    upload (file) {
+      this.stock.ref(this.userId + '/' + file.name).put(file)
+      this.stock.ref(this.userId).child(file.name).getDownloadURL().then(function (url) {
+        this.newEven.image = url
+        console.log('image = ' + this.newEven.image)
+      })
     }
   }
 }
