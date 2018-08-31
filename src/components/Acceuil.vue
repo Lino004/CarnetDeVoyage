@@ -128,6 +128,7 @@
 
 <script>
 import firebase from 'firebase'
+import {db, storage, auth} from '../firebase'
 
 export default {
   name: 'acceuil',
@@ -159,9 +160,9 @@ export default {
   },
   mounted () {
     this.userId = firebase.auth().currentUser.uid
-    this.db = firebase.database()
-    firebase.database().ref(this.userId).on('child_added', snapshot => this.events.push({...snapshot.val(), id: snapshot.key}))
-    firebase.database().ref(this.userId).on('child_removed', snapshot => {
+    this.db = db
+    db.ref(this.userId).on('child_added', snapshot => this.events.push({...snapshot.val(), id: snapshot.key}))
+    db.ref(this.userId).on('child_removed', snapshot => {
       const eventSupp = this.events.find(even => even.id === snapshot.key)
       const index = this.events.indexOf(eventSupp)
       this.events.slice(index, 1)
@@ -214,7 +215,7 @@ export default {
       }
     },
     detectFiles (fileList) {
-      Array.from(Array(fileList.length).keys()).map( x => {
+      Array.from(Array(fileList.length).keys()).map(x => {
         this.upload(fileList[x])
       })
     },
