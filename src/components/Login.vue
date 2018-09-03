@@ -40,8 +40,7 @@
 </template>
 
 <script>
-import firebase from 'firebase/app'
-import 'firebase/auth'
+import {auth} from '../firebase'
 
 export default {
   name: 'login',
@@ -56,7 +55,7 @@ export default {
   },
   methods: {
     verifier () {
-      firebase.auth().signInWithEmailAndPassword(this.user.email, this.user.password).then(
+      auth.signInWithEmailAndPassword(this.user.email, this.user.password).then(
         (user) => {
           this.$router.replace('acceuil')
         },

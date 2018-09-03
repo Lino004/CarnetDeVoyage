@@ -96,7 +96,7 @@
             <div :class="clas.container" v-for="event in events" :key="event.id">
               <div :class="clas.container2">
                 <div :class="clas.containerImg">
-                  <img :class="clas.Img" :style="clas.styleImg" src="../style/images/default.png" alt="Card image cap">
+                  <img :class="clas.Img" :style="clas.styleImg" :src="event.urlImage" alt="Card image cap">
                   <div class="card-img-overlay d-flex align-items-start">
                     <h5 class="w-100 display-10 font-weight-bold p-3 bg-dark text-white">{{ event.titre }}</h5>
                   </div>
@@ -127,7 +127,7 @@
 </template>
 
 <script>
-import firebase from 'firebase'
+import {db, storage, auth} from '../firebase'
 
 export default {
   name: 'acceuil',
@@ -154,33 +154,33 @@ export default {
         styleImg: '',
         containerInfo: 'card-body bg-light'
       },
-      textBntVoir: 'Voir +'
+      textBntVoir: 'Voir +',
+      uploadTask: null
     }
   },
   mounted () {
-    this.userId = firebase.auth().currentUser.uid
-    this.db = firebase.database()
-    firebase.database().ref(this.userId).on('child_added', snapshot => this.events.push({...snapshot.val(), id: snapshot.key}))
-    firebase.database().ref(this.userId).on('child_removed', snapshot => {
+    this.userId = auth.currentUser.uid
+    db.ref(this.userId).on('child_added', snapshot => this.events.push({...snapshot.val(), id: snapshot.key}))
+    db.ref(this.userId).on('child_removed', snapshot => {
       const eventSupp = this.events.find(even => even.id === snapshot.key)
       const index = this.events.indexOf(eventSupp)
       this.events.slice(index, 1)
     })
     this.temp = this.events
-    this.stock = firebase.storage()
   },
   methods: {
     deconnecter () {
-      firebase.auth().signOut().then(() => {
+      auth.signOut().then(() => {
         this.$router.replace('login')
       })
     },
     add () {
-      this.db.ref(this.userId).push().set({
+      db.ref(this.userId).push().set({
         titre: this.newEven.titre,
         lieu: this.newEven.lieu,
         date: this.newEven.date,
-        recit: this.newEven.recit
+        recit: this.newEven.recit,
+        urlImage: this.newEven.image
       })
       this.newEven.titre = ''
       this.newEven.lieu = ''
@@ -188,7 +188,7 @@ export default {
       this.newEven.recit = ''
     },
     supp (e) {
-      this.db.ref(this.userId).child(e.id).remove()
+      db.ref(this.userId).child(e.id).remove()
       location.reload()
     },
     voir (e) {
@@ -214,15 +214,27 @@ export default {
       }
     },
     detectFiles (fileList) {
-      Array.from(Array(fileList.length).keys()).map( x => {
+      Array.from(Array(fileList.length).keys()).map(x => {
         this.upload(fileList[x])
       })
     },
     upload (file) {
-      this.stock.ref(this.userId + '/' + file.name).put(file)
-      this.stock.ref(this.userId).child(file.name).getDownloadURL().then(function (url) {
-        this.newEven.image = url
-        console.log('image = ' + this.newEven.image)
+      this.uploadTask = storage.ref(this.userId + '/' + file.name).put(file)
+    }
+  },
+  watch: {
+    uploadTask: function () {
+      this.uploadTask.on('state_changed', snapshot => {
+        var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+        console.log('Upload is ' + progress + '% done')
+      },
+      null,
+      () => {
+        this.uploadTask.snapshot.ref.getDownloadURL().then(downloadURL => {
+          this.$emit('url', downloadURL)
+          console.log(downloadURL)
+          this.newEven.image = downloadURL
+        })
       })
     }
   }
