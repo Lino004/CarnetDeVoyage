@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import {auth} from '../firebase'
+import firebase from 'firebase'
 
 import HelloWorld from '@/components/HelloWorld'
 import Acceuil from '@/components/Acceuil'
@@ -46,7 +46,7 @@ var router = new Router({
 })
 
 router.beforeEach((to, from, next) => {
-  var userActuel = auth.currentUser
+  var userActuel = firebase.auth().currentUser
   var requiresAuth = to.matched.some(record => record.meta.requiresAuth)
 
   if (requiresAuth && !userActuel) next('login')
